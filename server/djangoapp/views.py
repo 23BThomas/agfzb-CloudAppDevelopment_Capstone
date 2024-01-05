@@ -13,10 +13,7 @@ import json
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
-
 # Create your views here.
-
-
 # Create an `about` view to render a static about page
 # def about(request):
 # ...
