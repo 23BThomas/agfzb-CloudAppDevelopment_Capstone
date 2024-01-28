@@ -91,13 +91,15 @@ def registration_request(request):
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
     if request.method == "GET":
-        context = {}
+        #context = {}
         url = "https://bettysamthom-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealers_from_cf(url)
-        context["dealership_list"] = dealerships
-       
-        return render(request, 'djangoapp/index.html',context)
-
+        #context["dealership_list"] = dealerships
+        # Concat all dealer's short name
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        #return render(request, 'djangoapp/index.html',context)
+        # Return a list of dealer short name
+        return HttpResponse(dealer_names)
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 # def get_dealer_details(request, dealer_id):
@@ -106,15 +108,21 @@ def get_dealer_details(request, dealer_id):
     if(request.method == "GET"):
         context = {}
         dealer_url = "https://bettysamthom-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        
+        dealer = get_dealer_from_cf_by_id(dealer_url, id=dealer_id)
+        context["dealer"] = dealer
+        
         reviews_url = "https://bettysamthom-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
-        dealerships = get_dealers_from_cf(dealer_url, id =dealer_id)
-        context['dealership'] = dealerships[0]
-        dealership_reviews = get_dealer_reviews_from_cf(reviews_url, id=dealer_id)
-        context['review_list'] = dealership_reviews
-        return render(request, 'djangoapp/dealer_details.html', context)
+        #dealerships = get_dealers_from_cf(dealer_url, id =dealer_id)
+        #context['dealership'] = dealerships[0]
+        #dealership_reviews = get_dealer_reviews_from_cf(reviews_url, id=dealer_id)
+        #context['review_list'] = dealership_reviews
+        #return render(request, 'djangoapp/dealer_details.html', context)
+        reviews = get_dealer_reviews_from_cf(review_url, id=dealer_id)
+        print(reviews)
+        context["reviews"] = reviews
 
-
-                      
+        return render(request, 'djangoapp/dealer_details.html', context)            
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
 # ...

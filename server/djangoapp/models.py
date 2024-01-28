@@ -34,10 +34,10 @@ class CarModel(models.Model):
         (WAGON, 'Wagon')
     ]
 
-    car_model = models.CharField(
-        null=False,
-        max_length = 30,
-        default = SEDAN )
+    #car_model = models.CharField(
+    #    null=False,
+    #    max_length = 30,
+    #    default = SEDAN )
 
     make = models.ForeignKey(CarMake, null=True, on_delete=models.CASCADE)
     dealer_id = models.IntegerField(null=True)
