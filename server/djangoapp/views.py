@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
 from .models import CarModel
 # from .restapis import related methods
-from .restapis import get_dealers_from_cf, post_request
+from .restapis import get_dealers_from_cf, post_request,get_dealer_reviews_from_cf
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -92,14 +92,16 @@ def registration_request(request):
 def get_dealerships(request):
     if request.method == "GET":
         #context = {}
-        url = "https://bettysamthom-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        url = "https://bettysamthom-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealers_from_cf(url)
         #context["dealership_list"] = dealerships
         # Concat all dealer's short name
-        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        #dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
         #return render(request, 'djangoapp/index.html',context)
         # Return a list of dealer short name
-        return HttpResponse(dealer_names)
+        #return HttpResponse(dealer_names)
+        context = {"dealerships": get_dealers_from_cf(url)}
+        return render(request, 'djangoapp/index.html', context)
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 # def get_dealer_details(request, dealer_id):
@@ -107,12 +109,12 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     if(request.method == "GET"):
         context = {}
-        dealer_url = "https://bettysamthom-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        dealer_url = "https://bettysamthom-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         
         dealer = get_dealer_from_cf_by_id(dealer_url, id=dealer_id)
         context["dealer"] = dealer
         
-        reviews_url = "https://bettysamthom-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
+        reviews_url = "https://bettysamthom-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
         #dealerships = get_dealers_from_cf(dealer_url, id =dealer_id)
         #context['dealership'] = dealerships[0]
         #dealership_reviews = get_dealer_reviews_from_cf(reviews_url, id=dealer_id)
@@ -129,7 +131,7 @@ def get_dealer_details(request, dealer_id):
 def add_review(request, dealer_id):
     if(request.method == "GET"):
         context = {}
-        dealer_url = "https://bettysmthom-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        dealer_url = "https://bettysamthom-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealers_from_cf(dealer_url, id=dealer_id)
         car_models = CarModel.objects.filter(dealer_id=dealer_id)
         context['cars'] = car_models

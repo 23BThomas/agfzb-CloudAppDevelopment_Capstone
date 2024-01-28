@@ -1,15 +1,17 @@
 import requests
 import json
+import logging
 # import related models here
 from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson.natural_language_understanding_v1 \
 import Features, SentimentOptions
-from .models import CarDealer
+from .models import CarDealer, DealerReview
 
 
 from requests.auth import HTTPBasicAuth
 
+logger = logging.getLogger(__name__)
 
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
@@ -18,24 +20,26 @@ def get_request(url, **kwargs):
     print(kwargs)
     response = None
 
-    #api_key = kwargs.get("api_key")
+    api_key = kwargs.get("api_key")
     print("GET from {} ".format(url))
     try:
         # Call get method of requests library with URL and parameters
-    #    if api_key:
-    #        params = dict()
-    #        params["text"] = kwargs["text"]
-    #        params["version"] = kwargs["version"]
-    #        params["features"] = kwargs["features"]
-    #        params["return_analyzed_text"] = kwargs["return_analyzed_text"]
-    #        response = requests.get(url, params=kwargs, headers={'Content-Type': 'application/json'},
-    #                                auth=HTTPBasicAuth('apikey', api_key))
-    #    else:
+        if api_key:
+            params = dict()
+            params["text"] = kwargs["text"]
+            params["version"] = kwargs["version"]
+            params["features"] = kwargs["features"]
+            params["return_analyzed_text"] = kwargs["return_analyzed_text"]
+            response = requests.get(url, params=kwargs, headers={'Content-Type': 'application/json'},
+                                    auth=HTTPBasicAuth('apikey', api_key))
+        else:
+            # Call get method of requests library with URL and parameters
             response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
     except:
         # If any error occurs
         print("Network exception occurred")
+
     status_code = response.status_code
     print("With status {} ".format(status_code))
     json_data = json.loads(response.text)
@@ -44,16 +48,20 @@ def get_request(url, **kwargs):
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
 def post_request(url, json_payload, **kwargs):
-    print(kwargs)
-    print("POST to {} ".format(url))
+    #print(kwargs)
+    #print("POST to {} ".format(url))
     #try:
-    response = requests.post(url, json=json_payload, params=kwargs)
+    #response = requests.post(url, json=json_payload, params=kwargs)
     #except:
        # print("Network exception occurred")
-    status_code = response.status_code
-    print("With status {} ".format(status_code))
-    json_data = json.loads(response.text)
-    return json_data
+    #status_code = response.status_code
+    #print("With status {} ".format(status_code))
+    #json_data = json.loads(response.text)
+    #return json_data
+    # Add your post reviews endpoint below
+    url =  "https://bettysamthom-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+    response = requests.post(url, params=kwargs, json=json_payload)
+    return response
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
 # def get_dealers_from_cf(url, **kwargs):
@@ -63,10 +71,10 @@ def get_dealers_from_cf(url, **kwargs):
     results = []
     # Call get_request with a URL parameter
     json_result = get_request(url)
-    #print("json result 66", json_result)
+    print("\nJSON RESULT",json_result)
     if json_result:
         # Get the row list in JSON as dealers
-        dealers = json_result
+        dealers= json_result
         # For each dealer object
         for dealer in dealers:
             # Get its content in `doc` object
