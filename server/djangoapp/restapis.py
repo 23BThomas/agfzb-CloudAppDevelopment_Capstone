@@ -59,7 +59,7 @@ def post_request(url, json_payload, **kwargs):
     #json_data = json.loads(response.text)
     #return json_data
     # Add your post reviews endpoint below
-    url =  "https://bettysamthom-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+    url =  "https://bettysamthom-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
     response = requests.post(url, params=kwargs, json=json_payload)
     return response
 
@@ -69,8 +69,13 @@ def post_request(url, json_payload, **kwargs):
 # - Parse JSON results into a CarDealer object list
 def get_dealers_from_cf(url, **kwargs):
     results = []
+    state = kwargs.get("state")
     # Call get_request with a URL parameter
-    json_result = get_request(url)
+    if state:
+        json_result = get_request(url, state=state)
+    else:
+        json_result = get_request(url)
+    #json_result = get_request(url)
     print("\nJSON RESULT",json_result)
     if json_result:
         # Get the row list in JSON as dealers
