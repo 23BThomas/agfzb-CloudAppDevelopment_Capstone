@@ -48,20 +48,20 @@ def get_request(url, **kwargs):
 # Create a `post_request` to make HTTP POST requests
 # e.g., response = requests.post(url, params=kwargs, json=payload)
 def post_request(url, json_payload, **kwargs):
-    #print(kwargs)
-    #print("POST to {} ".format(url))
+    print(kwargs)
+    print("POST to {} ".format(url))
     #try:
-    #response = requests.post(url, json=json_payload, params=kwargs)
+    response = requests.post(url, json=json_payload, params=kwargs)
     #except:
        # print("Network exception occurred")
-    #status_code = response.status_code
-    #print("With status {} ".format(status_code))
-    #json_data = json.loads(response.text)
-    #return json_data
+    status_code = response.status_code
+    print("With status {} ".format(status_code))
+    json_data = json.loads(response.text)
+    return json_data
     # Add your post reviews endpoint below
-    url =  "https://bettysamthom-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
-    response = requests.post(url, params=kwargs, json=json_payload)
-    return response
+    #url =  "https://bettysamthom-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+    #response = requests.post(url, params=kwargs, json=json_payload)
+    #return response
 
 # Create a get_dealers_from_cf method to get dealers from a cloud function
 # def get_dealers_from_cf(url, **kwargs):
@@ -115,6 +115,31 @@ def get_dealer_reviews_from_cf(url, **kwargs):
 # def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
+def analyze_review_sentiments(dealerreview):
+    url = "https://api.us-south.natural-language-understanding.watson.cloud.ibm.com/instances/969ed4fb-a407-4282-b9d9-8c0330c0349a"
+    api_key = "9tSyH531Usr8eUnVqc6hsFeivrIBsxQHJgnuuRyn_uw6"
+    # params = dict()
+    # params["text"] = dealerreview,
+    # params["version"] = "2022-04-07"
+    # params["features"] = ["sentiment"]
+    # params["return_analyzed_text"] = False
+    #response = get_request(url, api_key, params=params)
 
+    authenticator = IAMAuthenticator(api_key)
+    natural_language_understanding = NaturalLanguageUnderstandingV1(
+        version='2022-04-07',
+        authenticator=authenticator
+    )
+
+    natural_language_understanding.set_service_url(url)
+
+    try:
+        response = natural_language_understanding.analyze(
+            text = dealerreview,
+            features=Features(sentiment=SentimentOptions())).get_result()
+    except:
+        return 0
+    print(response)
+    return response['sentiment']['document']['score']
 
 
