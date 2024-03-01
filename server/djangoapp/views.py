@@ -49,7 +49,7 @@ def login_request(request):
             context['message'] = "Invalid username or password."
             return render(request, 'djangoapp/registration.html', context)
     else:
-        return render(request, 'djangoapp/registration.html', context)
+        return render(request, 'djangoapp/login.html', context)
 # Create a `logout_request` view to handle sign out request
 # def logout_request(request):
 # ...
@@ -93,10 +93,10 @@ def registration_request(request):
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
     if request.method == "GET":
-        url = "https://bettysamthom-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        url = "https://bettysamthom-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealers_from_cf(url)
         context = {}
-        context["dealerships"] = dealerships
+        context["dealerships_list"] = dealerships
         # Concat all dealer's short name
         #dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
         #return render(request, 'djangoapp/index.html',context)
@@ -111,7 +111,7 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     if(request.method == "GET"):
         context = {}
-        url = "https://bettysamthom-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        url = "https://bettysamthom-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealer_by_id_from_cf(url, id=dealer_id)
         print(f"Dealer is: {dealer}")
         context["dealership"] = dealerships[0]
@@ -120,7 +120,7 @@ def get_dealer_details(request, dealer_id):
         #dealership_reviews = get_dealer_reviews_from_cf(reviews_url, id=dealer_id)
         #context['review_list'] = dealership_reviews
         #return render(request, 'djangoapp/dealer_details.html', context)
-        reviews_url = "https://bettysamthom-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
+        reviews_url = "https://bettysamthom-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
         dealership_reviews = get_dealer_reviews_from_cf(reviews_url, id=dealer_id)
         print(dealership_reviews)
         context['dealership_reviews'] = dealership_reviews
@@ -134,7 +134,7 @@ def get_dealer_details(request, dealer_id):
 def add_review(request, dealer_id):
     if request.user.is_authenticated:
         context = {}
-        dealer_url = "https://bettysamthom-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        dealer_url = "https://bettysamthom-3000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealer_by_id_from_cf(dealer_url, id=dealer_id)
         context["dealer"] = dealer
         if request.method == "GET":
@@ -158,7 +158,7 @@ def add_review(request, dealer_id):
                 review["car_make"] = car.make.name
                 review["car_model"] = car.name
                 review["car_year"] = car.year
-            post_url = "https://bettysamthom-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+            post_url = "https://bettysamthom-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
             review = dict()
             review["id"] = 1
             review["dealership"] = dealer_id

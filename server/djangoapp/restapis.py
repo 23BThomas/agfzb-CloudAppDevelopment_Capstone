@@ -1,6 +1,7 @@
 import requests
 import json
 import logging
+import configparser
 # import related models here
 from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
@@ -77,25 +78,18 @@ def get_dealers_from_cf(url, **kwargs):
     print(json_result)
     #json_result = get_request(url)
     #print("\nJSON RESULT",json_result)
-    if json_result:
+    if json_result and isinstance(json_result, list):
         # Get the row list in JSON as dealers
-        dealers= json_result
+        dealers = json_result
         # For each dealer object
         for dealer in dealers:
             # Get its content in `doc` object
             dealer_doc = dealer
+            print(dealer_doc)
             # Create a CarDealer object with values in `doc` object
-            dealer_obj = CarDealer(
-                address=dealer_doc["address"],
-                city=dealer_doc["city"],
-                full_name=dealer_doc["full_name"],
-                id=dealer_doc["id"],
-                lat=dealer_doc["lat"],
-                long=dealer_doc["long"],
-                short_name=dealer_doc["short_name"],
-                st=dealer_doc["st"],
-                zip=dealer_doc["zip"]
-            )
+            dealer_obj = CarDealer(address=dealer_doc["address"], city=dealer_doc["city"], full_name=dealer_doc["full_name"],
+                                  id=dealer_doc["id"], lat=dealer_doc["lat"], long=dealer_doc["long"], short_name=dealer_doc["short_name"],
+                                  st=dealer_doc["st"], zip=dealer_doc["zip"])
             results.append(dealer_obj)
     return results
 

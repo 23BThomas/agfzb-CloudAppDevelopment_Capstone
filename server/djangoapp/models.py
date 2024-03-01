@@ -12,6 +12,7 @@ from django.utils.timezone import now
 class CarMake(models.Model):
     name = models.CharField(null=False, max_length = 30, default ="Car Name")
     description = models.CharField(null=False, max_length = 100, default = "Description of the car is mentioned here")
+    
     def __str__(self):
         return self.name + " " + self.description 
 
@@ -86,3 +87,6 @@ class DealerReview:
         self.car_year = car_year
         self.sentiment = sentiment
         self.id = id
+
+    def __str__(self):
+        return "Dealer name: " + self.full_name
