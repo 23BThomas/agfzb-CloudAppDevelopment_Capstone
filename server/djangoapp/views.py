@@ -82,7 +82,7 @@ def registration_request(request):
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
     context = {}
-    url ='https://bettysamthom-3000.theiadockernext-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get'
+    url ='https://bettysamthom-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get'
     dealerships = get_dealers_from_cf(url)
     context['dealership_list'] = dealerships
     if request.method == "GET":
@@ -95,10 +95,10 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     if(request.method == "GET"):
         context = {}
-        dealer_url = "https://bettysamthom-3000.theiadockernext-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
-        reviews_url = "https://bettysamthom-5000.theiadockernext-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
+        dealer_url = "https://bettysamthom-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        reviews_url = "https://bettysamthom-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/get_reviews"
         dealerships = get_dealers_from_cf(dealer_url, id =dealer_id)
-        context['dealership'] = dealerships[0]
+        context['dealership'] = dealerships
         dealership_reviews = get_dealer_reviews_from_cf(reviews_url, id=dealer_id)
         context['review_list'] = dealership_reviews
         return render(request, 'djangoapp/dealer_details.html', context)
@@ -109,16 +109,18 @@ def get_dealer_details(request, dealer_id):
 def add_review(request, dealer_id):
     if(request.method == "GET"):
         context = {}
-        dealer_url = "https://bettysamthom-3000.theiadockernext-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
+        dealer_url = "https://bettysamthom-3000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/dealerships/get"
         dealerships = get_dealers_from_cf(dealer_url, id=dealer_id)
-        car_models = CarModel.objects.filter(dealer_id=dealer_id)
+        #car_models = CarModel.objects.filter(dealer_id=dealer_id)
+        car_models = CarModel.objects.all()
+        print(car_models)
         context['cars'] = car_models
-        context['dealership'] = dealerships[0]
+        context['dealership'] = dealerships
         context['dealer_id'] = dealer_id
         return render(request, 'djangoapp/add_review.html', context)
     elif(request.method=="POST"):
         if(request.user.is_authenticated):
-            url = "https://bettysamthom-5000.theiadockernext-3-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
+            url = "https://bettysamthom-5000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/api/post_review"
             review = dict()
             review["id"] = 1
             review["dealership"] = dealer_id
